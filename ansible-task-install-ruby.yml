@@ -1,3 +1,17 @@
+---
+- hosts: target
+  tasks:
+    - name: Install autoconf, automake, bison, readline etc through Yum
+      yum:
+        name: "{{ item }}"
+        state: present
+      with_items:
+      - autoconf
+      - automake
+      - bison
+      - gcc-c++
+      - libffi-devel
+      - libtool
       - readline-devel
       - sqlite-devel
       - libyaml-devel
@@ -10,10 +24,6 @@
 #      shell: 'curl -sSL https://get.rvm.io | bash -s stable'
 #      register: result
 
-#    - name: debug install
-#      debug:
-#        msg: "ruby install results: {{ result.stdout }}"
-
     - name: Download RVM installation script to /tmp/ dir
       get_url:
         url: https://get.rvm.io
@@ -23,6 +33,11 @@
 
     - name: Install RVM stable with ruby
       shell: 'bash -s stable --ruby /tmp/rvm_install_script.sh'
+
+    - name: 
+      # shell: 'echo "source \$HOME/.rvm/scripts/rvm" >> ~/.bashrc' # single user mode
+      shell: 'echo "source /usr/local/rvm/scripts/rvm" >> ~/.bashrc' # multi user mode
+      notify: source bashrc
 
     - name: Install Git through Yum
       yum:

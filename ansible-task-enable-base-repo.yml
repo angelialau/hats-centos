@@ -1,0 +1,15 @@
+---
+- hosts: target
+  tasks:
+  - name: Install yum-utils through Yum
+    yum:
+      name: yum-utils
+      state: latest
+
+  - name: Enable CentOS base repository through Yum-Config-Manager
+    command: yum-config-manager --enable base
+
+  - name: Update Yum
+    yum:
+      name: '*'
+      state: latest

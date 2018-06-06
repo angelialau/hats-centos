@@ -1,0 +1,34 @@
+      - readline-devel
+      - sqlite-devel
+      - libyaml-devel
+      - openssl-devel
+
+    - name: Import keys for Ruby from GPG
+      command: "gpg --keyserver hkp://keys.gnupg.net --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3 7D2BAF1CF37B13E2069D6956105BD0E739499BDB"
+
+#    - name: Ruby install (DEBUG)
+#      shell: 'curl -sSL https://get.rvm.io | bash -s stable'
+#      register: result
+
+#    - name: debug install
+#      debug:
+#        msg: "ruby install results: {{ result.stdout }}"
+
+    - name: Download RVM installation script to /tmp/ dir
+      get_url:
+        url: https://get.rvm.io
+        dest: /tmp/rvm_install_script.sh
+        force: yes
+        mode: 0777
+
+    - name: Install RVM stable with ruby
+      shell: 'bash -s stable --ruby /tmp/rvm_install_script.sh'
+
+    - name: Install Git through Yum
+      yum:
+        name: git
+        state: present
+
+  handlers:
+    - name: source bashrc
+      shell: source ~/.bashrc

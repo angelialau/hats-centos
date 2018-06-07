@@ -5,11 +5,14 @@
     yum:
       name: yum-utils
       state: latest
+    become: yes
 
   - name: Enable CentOS base repository through Yum-Config-Manager
     command: yum-config-manager --enable base
+    become: yes
 
   - name: Update Yum
     yum:
       name: '*'
       state: latest
+    become: yes    

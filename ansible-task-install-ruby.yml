@@ -1,5 +1,10 @@
 ---
 - hosts: target
+  vars:
+    rvm:
+      url: "https://get.rvm.io"
+      temp_installer_path: "/tmp/rvm_installer.sh"
+
   tasks:
     - name: Install autoconf, automake, bison, readline etc through Yum
       yum:
@@ -16,34 +21,35 @@
       - sqlite-devel
       - libyaml-devel
       - openssl-devel
+      become: yes
 
-    - name: Import keys for Ruby from GPG
+    - name: Import keys for RVM from GPG
       command: "gpg --keyserver hkp://keys.gnupg.net --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3 7D2BAF1CF37B13E2069D6956105BD0E739499BDB"
-
-#    - name: Ruby install (DEBUG)
-#      shell: 'curl -sSL https://get.rvm.io | bash -s stable'
-#      register: result
-
-    - name: Download RVM installation script to /tmp/ dir
+- name: "Download RVM installation script to {{ rvm.temp_installer_path }}"
       get_url:
-        url: https://get.rvm.io
-        dest: /tmp/rvm_install_script.sh
+        url: "{{ rvm.url }}"
+        dest: "{{ rvm.temp_installer_path }}"
         force: yes
-        mode: 0777
+        mode: 0755
 
     - name: Install RVM stable with ruby
-      shell: 'bash -s stable --ruby /tmp/rvm_install_script.sh'
+      shell: "bash -s stable --ruby {{ rvm.temp_installer_path }}"
 
-    - name: 
-      # shell: 'echo "source \$HOME/.rvm/scripts/rvm" >> ~/.bashrc' # single user mode
-      shell: 'echo "source /usr/local/rvm/scripts/rvm" >> ~/.bashrc' # multi user mode
+    - name: Echo source for rvm to bashrc
+      shell: 'echo "source ~/.rvm/scripts/rvm" >> ~/.bashrc'
       notify: source bashrc
 
     - name: Install Git through Yum
       yum:
         name: git
         state: present
+      become: yes
 
   handlers:
     - name: source bashrc
       shell: source ~/.bashrc
+
+#    - name: remove rvm installer
+#      file:
+#        path: "{{ rvm.temp_installer_path }}"
+#        state: absent

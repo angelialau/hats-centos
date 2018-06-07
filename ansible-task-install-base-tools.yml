@@ -11,3 +11,4 @@
         - unzip
         - epel-release
         - yum-utils
+      become: yes

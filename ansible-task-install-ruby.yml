@@ -26,18 +26,14 @@
     - name: Import keys for RVM from GPG
       command: "gpg --keyserver hkp://keys.gnupg.net --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3 7D2BAF1CF37B13E2069D6956105BD0E739499BDB"
 
-    - name: "Download RVM installation script to {{ rvm.temp_installer_path }}"
-      get_url:
-        url: "{{ rvm.url }}"
-        dest: "{{ rvm.temp_installer_path }}"
-        force: yes
-        mode: 0755
-
-    - name: Install RVM stable with ruby
-      shell: "bash -s stable --ruby {{ rvm.temp_installer_path }}"
+    - name: Download and run RVM installer
+      shell: \curl -sSL https://get.rvm.io | bash -s stable --ruby
+      register: rvm_result
 
     - name: Echo source for rvm to bashrc
-      shell: 'echo "source ~/.rvm/scripts/rvm" >> ~/.bashrc'
+      lineinfile:
+        path: ~/.bashrc
+        line: 'source ~/.rvm/scripts/rvm'
       notify: source bashrc
 
     - name: Install Git through Yum
@@ -46,11 +42,29 @@
         state: present
       become: yes
 
+    - name: Reboot VM to complete RVM installation
+      shell: ( sleep 3 && /sbin/reboot & )
+      async: 0
+      poll: 0
+      become: yes
+
+    - name: Wait for server to complete reboot. This will take a while ...
+      local_action: wait_for
+      args:
+        host: target
+        delay: 15
+        timeout: 150
+        state: started
+      become: false
+
+    - name: Install ruby-head with RVM
+      shell: rvm install ruby-head
+
   handlers:
     - name: source bashrc
       shell: source ~/.bashrc
 
-#    - name: remove rvm installer
-#      file:
-#        path: "{{ rvm.temp_installer_path }}"
-#        state: absent
+    - name: remove rvm installer
+      file:
+        path: "{{ rvm.temp_installer_path }}"
+        state: absent

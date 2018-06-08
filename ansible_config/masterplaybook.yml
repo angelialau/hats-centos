@@ -3,6 +3,6 @@
 - import_playbook: playbook-setup-mgmt-target-ssh.yml
 
 - import_playbook: playbook-set-sudoer.yml
-- import_playbook: playbook-enable-base-repo.yml 
 - import_playbook: playbook-install-essential-tools.yml
 - import_playbook: playbook-install-ruby.yml
+- import_playbook: playbook-install-brew.yml

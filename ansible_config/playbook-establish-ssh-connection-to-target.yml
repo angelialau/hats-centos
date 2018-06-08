@@ -1,0 +1,23 @@
+---
+
+- hosts: mgmt
+  become: yes
+  gather_facts: false
+
+  tasks:
+
+  # Generate RSA host key
+  - name: generate host key
+    shell: yes | ssh-keygen -t rsa -f ~/.ssh/id_rsa -C "" -N ""
+    become: no
+
+  # Gather public keys from target vms and append to known_hosts
+  - name: populate known_hosts
+    shell: ssh-keyscan target >> /home/vagrant/.ssh/known_hosts
+
+  # Install ssh key
+  - name: install ssh key
+    authorized_key: user=vagrant key="{{ lookup('file', '/home/vagrant/.ssh/id_rsa.pub') }}" state=present
+    become: yes
+    remote_user: vagrant
+

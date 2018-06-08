@@ -16,10 +16,10 @@
 
   - name: save public key to known_hosts
     known_hosts:
-    name: target
-    key: "{{ target_public_key.stdout }}"
-    path: /home/vagrant/.ssh/known_hosts
-    state: present
+      name: target
+      key: "{{ target_public_key.stdout }}"
+      path: /home/vagrant/.ssh/known_hosts
+      state: present
 
   - name: install ssh key
     authorized_key: user=vagrant key="{{ lookup('file', '/home/vagrant/.ssh/id_rsa.pub') }}" state=present

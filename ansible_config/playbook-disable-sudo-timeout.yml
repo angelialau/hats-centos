@@ -1,0 +1,6 @@
+---
+
+- hosts: target
+
+  tasks:
+- import_tasks: task-disable-sudo-timeout.yml

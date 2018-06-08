@@ -1,0 +1,43 @@
+---
+- hosts: target
+  vars:
+    sdk:
+      url: 'https://dl.google.com/android/repository/sdk-tools-linux-3859397.zip'
+      temp_dir: "/tmp/{{ansible_user_id}}/ansible"
+      perm_dir: "/opt/android-sdk"
+
+  tasks:
+    - name: Install Java through Yum
+      yum:
+        name: java
+        state: present
+      become: yes
+
+    - name: Download Android SDK zipped repo to /tmp/vagrant/ansible
+      get_url:
+        url: "{{ sdk.url }}"
+        dest: "{{sdk.temp_dir}}/sdk-tools-linux-3859397.zip"
+
+    - name: Unzip sdk repo to /tmp/vagrant/ansible/tools
+      unarchive:
+        src: "{{sdk.temp_dir}}/sdk-tools-linux-3859397.zip"
+        dest: "{{ sdk.temp_dir}}"
+        creates: "{{sdk.temp_dir}}/tools"
+        remote_src: yes
+
+    - name: Make new /opt/android-sdk directory 
+      file:
+        path: "{{ sdk.perm_dir }}"
+        state: directory
+        owner: root
+        group: wheel
+      become: yes
+
+    - name: Move unzipped contents to /opt/android-sdk
+      shell: "mv {{sdk.temp_dir}}/tools/* {{sdk.perm_dir}}"
+      become: yes
+
+    - name: Remove SDK zipped library 
+      file:
+        path: "{{sdk.temp_dir}}/sdk-tools-linux-3859397.zip"
+        state: absent 

@@ -1,6 +1,9 @@
 ---
+
 - hosts: target
+
   tasks:
+
   - name: Install yum-utils through Yum
     yum:
       name: yum-utils
@@ -15,4 +18,5 @@
     yum:
       name: '*'
       state: latest
-    become: yes    
+    become: yes
+    

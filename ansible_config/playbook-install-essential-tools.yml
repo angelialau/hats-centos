@@ -1,7 +1,9 @@
 ---
+
 - hosts: target
+
   tasks:
-    - name: Install wget, zip, unzip, yum-utils through Yum
+    - name: Install wget, zip, unzip
       yum:
         name: "{{ item }}"
         state: present
@@ -10,5 +12,5 @@
         - zip
         - unzip
         - epel-release
-        - yum-utils
       become: yes
+      

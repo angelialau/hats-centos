@@ -3,7 +3,7 @@
 - hosts: target
 
   tasks:
-    - name: Install wget, zip, unzip
+    - name: Yum install wget, zip, unzip
       yum:
         name: "{{ item }}"
         state: present

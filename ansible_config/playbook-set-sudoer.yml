@@ -3,7 +3,8 @@
 - hosts: target
   tasks:
 
-  - lineinfile:
+  - name: Disable password requirement for sudo
+    lineinfile:
       path: /etc/sudoers
       state: present
       regexp: '^%wheel'

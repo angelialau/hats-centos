@@ -6,16 +6,21 @@
 
   tasks:
 
-  # Generate RSA host key
   - name: generate host key
-    shell: yes | ssh-keygen -t rsa -f ~/.ssh/id_rsa -C "" -N ""
+    shell: yes | ssh-keygen -t rsa -b 2048 -f ~/.ssh/id_rsa -C "" -N ""
     become: no
 
-  # Gather public keys from host: target and append to known_hosts
-  - name: populate known_hosts
-    shell: ssh-keyscan target >> /home/vagrant/.ssh/known_hosts
+  - name: get public key of target
+    shell: ssh-keyscan target
+    register: target_public_key
 
-  # Install ssh key
+  - name: save public key to known_hosts
+    known_hosts:
+    name: target
+    key: "{{ target_public_key.stdout }}"
+    path: /home/vagrant/.ssh/known_hosts
+    state: present
+
   - name: install ssh key
     authorized_key: user=vagrant key="{{ lookup('file', '/home/vagrant/.ssh/id_rsa.pub') }}" state=present
     become: yes

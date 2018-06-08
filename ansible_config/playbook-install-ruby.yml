@@ -1,5 +1,4 @@
 ---
-
 - hosts: target
   vars:
     rvm:
@@ -22,6 +21,7 @@
       - sqlite-devel
       - libyaml-devel
       - openssl-devel
+      - git
       become: yes
 
     - name: Import keys for RVM from GPG
@@ -31,17 +31,12 @@
       shell: \curl -sSL https://get.rvm.io | bash -s stable --ruby
       register: rvm_result
 
-    - name: Echo source for rvm to bashrc
+    - name: Append source rvm to bashrc
       lineinfile:
         path: ~/.bashrc
         line: 'source ~/.rvm/scripts/rvm'
-      notify: source bashrc
-
-    - name: Install Git through Yum
-      yum:
-        name: git
         state: present
-      become: yes
+      notify: Source bashrc
 
     - name: Reboot VM to complete RVM installation
       shell: ( sleep 3 && /sbin/reboot & )
@@ -60,13 +55,13 @@
 
     - name: Install ruby-head with RVM
       shell: rvm install ruby-head
+      notify: Remove rvm installer
 
   handlers:
-    
-    - name: source bashrc
+    - name: Source bashrc
       shell: source ~/.bashrc
 
-    - name: remove rvm installer
+    - name: Remove rvm installer
       file:
         path: "{{ rvm.temp_installer_path }}"
         state: absent

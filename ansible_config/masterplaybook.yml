@@ -9,3 +9,4 @@
 # - import_playbook: playbook-install-android-SDK.yml
 - import_playbook: playbook-install-java-build-tools.yml
 - import_playbook: playbook-install-xvfb.yml
+- import_playbook: playbook-install-python-pip.yml

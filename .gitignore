@@ -1,3 +1,11 @@
+# OS-specific
 .DS_Store
 
+
+# Ansible stuff
 *.retry
+
+
+# Vagrant stuff
+boxes/*
+/.vagrant

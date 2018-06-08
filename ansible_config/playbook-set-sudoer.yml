@@ -1,8 +1,6 @@
 ---
-
 - hosts: target
   tasks:
-
   - name: Disable password requirement for sudo
     lineinfile:
       path: /etc/sudoers
@@ -11,4 +9,3 @@
       line: '%wheel ALL=(ALL) NOPASSWD: ALL'
       validate: 'visudo -cf %s'
     become: yes
-    

@@ -6,3 +6,7 @@ set-sudoer
 enable-base-repo
 install-base-tools
 install-ruby
+install-brew
+
+##### Notes
+After running the installer scripts for rvm and linuxbrew, a system reboot is required. Please expect some time to pass! 

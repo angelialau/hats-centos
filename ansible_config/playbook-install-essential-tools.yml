@@ -1,16 +1,29 @@
 ---
-
 - hosts: target
-
   tasks:
-    - name: Yum install wget, zip, unzip
-      yum:
-        name: "{{ item }}"
-        state: present
-      with_items:
-        - wget
-        - zip
-        - unzip
-        - epel-release
-      become: yes
-      
+  - name: Install yum-utils through Yum
+    yum:
+      name: yum-utils
+      state: latest
+    become: yes
+
+  - name: Enable CentOS base repository through Yum-Config-Manager
+    command: yum-config-manager --enable base
+    become: yes
+
+  - name: Update Yum
+    yum:
+      name: '*'
+      state: latest
+    become: yes
+
+  - name: Install wget, zip, unzip through Yum
+    yum:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - wget
+      - zip
+      - unzip
+      - epel-release
+    become: yes

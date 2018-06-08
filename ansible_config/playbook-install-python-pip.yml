@@ -1,0 +1,28 @@
+
+- hosts: target
+
+  tasks:
+    - name: Install python through Yum
+      yum:
+        name: "{{ item }}"
+        state: present
+      with_items:
+      - python-pip
+      - python-devel
+      - python-xlib
+      become: yes
+
+    - name: Install openssl-devel
+      yum:
+        name: openssl-devel
+        state: present
+      become: yes
+
+    - name: Install missing JPEG lib
+      yum:
+        name: "{{ item }}"
+        state: present
+      with_items:
+      - libjpeg-devel
+      - libjpeg-turbo-devel
+      become: yes

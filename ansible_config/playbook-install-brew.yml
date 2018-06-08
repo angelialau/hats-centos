@@ -4,22 +4,13 @@
   tasks:
     - name: Download and run Linux Brew installer with Ruby
       shell: echo -ne "\n" | ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Linuxbrew/install/master/install)"
-      register: linuxbrew_res
-
-    - debug:
-        var: linuxbrew_res
 
     - name: Export linuxbrew path to bashrc
       lineinfile:
         path: ~/.bashrc
-        line: 'export PATH=/home/linuxbrew/.linuxbrew/bin:\$PATH'
-        insert:
+        line: 'export PATH=/home/linuxbrew/.linuxbrew/bin:$PATH'
         state: present
-      register: exportpath_res
       notify: Source bashrc
-
-    - debug:
-        var: exportpath_res
 
     - name: Reboot VM to complete LinuxBrew installation
       shell: ( sleep 3 && /sbin/reboot & )
@@ -38,10 +29,6 @@
 
     - name: Check if brew is installed
       command: brew --version
-      register: checkbrew_res
-
-    - debug:
-        var: checkbrew_res
 
   handlers:
     - name: Source bashrc

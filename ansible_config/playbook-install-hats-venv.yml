@@ -1,0 +1,61 @@
+---
+
+- hosts: target
+
+  tasks:
+    - name: Install virtualenv
+      pip: 
+        name: virtualenv
+        state: latest
+      become: yes
+
+    - name: Create hats diretory
+      file:
+        path: "/opt/hats"
+        state: directory
+        owner: root
+        group: wheel
+      become: yes
+
+    - name: Create hats virtualenv
+      become: yes 
+      pip:
+        name: "{{ item }}"
+        state: present
+        extra_args: --upgrade
+        virtualenv: /opt/hats
+      with_items:
+      - pip
+      - setuptools
+      - python-xlib
+      notify: Source hats 
+
+    - name: Append hats env activation to bashrc
+      lineinfile:
+        path: ~/.bashrc
+        state: present
+        line: 'source /opt/hats/bin/activate'
+      notify: Source bashrc
+
+    # - name: Install functools through easy_install in hats env
+    #   become: yes 
+    #   easy_install:
+    #     name: functools
+    #     state: present
+    #     virtualenv: /opt/hats
+    #   notify: Source bashrc
+
+    # - name: Install the packages specified in pip-install-list.txt in hats env
+    #   pip: 
+    #     requirements: https://raw.githubusercontent.com/younglim/hats-ci/master/install-list/pip-install-list.txt
+    #     state: present
+    #     virtualenv: /opt/hats
+
+  handlers:
+    - name: Source bashrc
+      shell: source ~/.bashrc
+
+    - name: Source hats env
+      shell: source /opt/hats/bin/activate
+
+ 

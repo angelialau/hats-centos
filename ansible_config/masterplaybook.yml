@@ -11,3 +11,4 @@
 - import_playbook: playbook-install-xvfb.yml
 - import_playbook: playbook-install-python-pip.yml
 # - import_playbook: playbook-playbook-install-hats-venv.yml
+# - import_playbook: playbook-install-google-chrome.yml

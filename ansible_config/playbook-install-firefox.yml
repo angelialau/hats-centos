@@ -1,0 +1,29 @@
+---
+
+- hosts: target
+  vars:
+    firefox:
+      url: 'http://ftp.mozilla.org/pub/firefox/releases/58.0/linux-x86_64/en-US/firefox-58.0.tar.bz2'
+    geckodriver:
+      url: 'https://github.com/mozilla/geckodriver/releases/download/v0.19.1/geckodriver-v0.19.1-linux64.tar.gz'
+
+  tasks:
+    - name: Download firefox repo to /opt
+      unarchive:
+        src: "{{ firefox.url }}"
+        dest: /opt
+        remote_src: yes
+      become: yes
+
+    - name: Add line to add opt/firefox to path to bashrc
+      lineinfile:
+        path: ~/.bashrc
+        state: present
+        line: 'export PATH=/opt/firefox:$PATH'
+
+    - name: Download geckodriver repo to /opt/hats
+      unarchive:
+        src: "{{ geckodriver.url }}"
+        dest: /opt/hats
+        remote_src: yes
+      become: yes

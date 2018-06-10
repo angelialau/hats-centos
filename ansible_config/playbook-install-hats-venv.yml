@@ -28,7 +28,7 @@
       - pip
       - setuptools
       - python-xlib
-      notify: Source hats 
+      notify: Source hats env
 
     - name: Append hats env activation to bashrc
       lineinfile:

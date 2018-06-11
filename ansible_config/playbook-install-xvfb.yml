@@ -8,6 +8,7 @@
         name: "{{ item }}"
         state: present
       with_items:
+      - psmisc
       - xorg-x11-fonts-Type1
       - xorg-x11-fonts-75dpi
       - xorg-x11-server-Xvfb

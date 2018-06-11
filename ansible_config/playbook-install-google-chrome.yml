@@ -1,0 +1,38 @@
+---
+
+- hosts: target
+  vars:
+    chromedriver:
+      url: 'https://chromedriver.storage.googleapis.com/2.35/chromedriver_linux64.zip'
+
+  tasks:
+    - name: Add Google Chrome to yum repo directory
+      yum_repository:
+        file: google-chrome
+        name: google-chrome
+        description: google-chrome - \$basearch
+        baseurl: http://dl.google.com/linux/chrome/rpm/stable/\$basearch
+        enabled: yes
+        gpgcheck: yes
+        gpgkey: https://dl-ssl.google.com/linux/linux_signing_key.pub
+        state: present
+      become: yes
+
+    - name: Install Google Chrome though yum
+      yum:
+        name: google-chrome-stable
+        state: present
+      become: yes
+
+    - name: Install Chromedriver
+      unarchive:
+        src: "{{ chromedriver.url }}"
+        dest: /opt/hats
+        remote_src: yes
+      become: yes
+
+    - name: Add line to add opt/hats to path to bashrc
+      lineinfile:
+        path: ~/.bashrc
+        state: present
+        line: 'export PATH=/opt/hats:$PATH'

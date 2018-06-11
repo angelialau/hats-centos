@@ -18,26 +18,55 @@
         url: "{{ sdk.url }}"
         dest: "{{sdk.temp_dir}}/sdk-tools-linux-3859397.zip"
 
-    - name: Unzip sdk repo to /tmp/vagrant/ansible/tools
+      - name: Unzip sdk repo to /tmp/vagrant/ansible/tools
       unarchive:
         src: "{{sdk.temp_dir}}/sdk-tools-linux-3859397.zip"
         dest: "{{ sdk.temp_dir}}"
         creates: "{{sdk.temp_dir}}/tools"
         remote_src: yes
 
-    - name: Make new /opt/android-sdk directory 
+    - name: Make new /opt/android-sdk directory
       file:
         path: "{{ sdk.perm_dir }}"
         state: directory
-        owner: root
-        group: wheel
+        owner: "{{ ansible_user_id }}"
+        group: "{{ ansible_user_id }}"
+        mode: 0775
+        recurse: yes
       become: yes
 
     - name: Move unzipped contents to /opt/android-sdk
       shell: "mv {{sdk.temp_dir}}/tools/* {{sdk.perm_dir}}"
       become: yes
 
-    - name: Remove SDK zipped library 
+    - name: Remove SDK zipped library
       file:
         path: "{{sdk.temp_dir}}/sdk-tools-linux-3859397.zip"
-        state: absent 
+        state: absent
+      become: yes
+
+    - name: Set Environment Variable for ANDROID_SDK_ROOT, ANDROID_HOME, ANDROID_SDK_HOME and PATHs
+      lineinfile:
+        path: ~/.bashrc
+        line: "{{ item }}"
+        state: present
+      with_items:
+        - 'export ANDROID_SDK_ROOT=/opt/android-sdk'
+        - 'export ANDROID_HOME=/opt/android-sdk'
+        - 'export ANDROID_SDK_HOME=/opt/android-sdk'
+        - 'export PATH=$ANDROID_HOME/platform-tools:$PATH'
+        - 'export PATH=$ANDROID_HOME/tools:$PATH'
+        - 'export PATH=$ANDROID_HOME/tools/bin:$PATH'
+
+    - name: Source bashrc
+      shell: source ~/.bashrc
+
+    - name: Create /opt/android-sdk/.android directory
+      file:
+        path: "{{ sdk.perm_dir }}/.android"
+        state: directory
+
+    - name: Create repositories.cfg in .android directory
+      file:
+        path: "{{ sdk.dot_android }}/repositories.cfg"
+        state: touch

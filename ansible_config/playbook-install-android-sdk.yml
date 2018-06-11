@@ -3,8 +3,12 @@
   vars:
     sdk:
       url: 'https://dl.google.com/android/repository/sdk-tools-linux-3859397.zip'
-      temp_dir: "/tmp/{{ansible_user_id}}/ansible"
       perm_dir: "/opt/android-sdk"
+      zipfilename: "sdk-tools-linux-3859397.zip"
+    android:
+      build_tools: 'build-tools;27.0.3'
+      sys_image: 'system-images;android-27;google_apis;x86'
+      platform_tools: 'platform-tools'
 
   tasks:
     - name: Install Java through Yum
@@ -12,36 +16,30 @@
         name: java
         state: present
       become: yes
-
-    - name: Download Android SDK zipped repo to /tmp/vagrant/ansible
-      get_url:
-        url: "{{ sdk.url }}"
-        dest: "{{sdk.temp_dir}}/sdk-tools-linux-3859397.zip"
-
-      - name: Unzip sdk repo to /tmp/vagrant/ansible/tools
-      unarchive:
-        src: "{{sdk.temp_dir}}/sdk-tools-linux-3859397.zip"
-        dest: "{{ sdk.temp_dir}}"
-        creates: "{{sdk.temp_dir}}/tools"
-        remote_src: yes
-
-    - name: Make new /opt/android-sdk directory
+  
+    - name: Make new /opt/android-sdk/ directory
       file:
         path: "{{ sdk.perm_dir }}"
         state: directory
         owner: "{{ ansible_user_id }}"
         group: "{{ ansible_user_id }}"
-        mode: 0775
         recurse: yes
       become: yes
 
-    - name: Move unzipped contents to /opt/android-sdk
-      shell: "mv {{sdk.temp_dir}}/tools/* {{sdk.perm_dir}}"
-      become: yes
+    - name: Download Android SDK zipped repo to /opt/android-sdk
+      get_url:
+        url: "{{ sdk.url }}"
+        dest: "{{sdk.perm_dir}}/{{sdk.zipfilename}}"
 
-    - name: Remove SDK zipped library
+    - name: Unzip SDK repo
+      unarchive:
+        src: "{{sdk.perm_dir}}/{{sdk.zipfilename}}"
+        dest: "{{sdk.perm_dir}}"
+        remote_src: yes
+
+    - name: Remove SDK zipped repo
       file:
-        path: "{{sdk.temp_dir}}/sdk-tools-linux-3859397.zip"
+        path: "{{sdk.perm_dir}}/{{sdk.zipfilename}}"
         state: absent
       become: yes
 
@@ -66,7 +64,13 @@
         path: "{{ sdk.perm_dir }}/.android"
         state: directory
 
-    - name: Create repositories.cfg in .android directory
+    - name: Touch repositories.cfg in .android directory
       file:
-        path: "{{ sdk.dot_android }}/repositories.cfg"
+        path: "{{ sdk.perm_dir }}/.android/repositories.cfg"
         state: touch
+
+    - name: Say yes to all SDK licenses
+      shell: yes | sdkmanager --licenses
+
+    - name: Install Android build tools
+      shell: sdkmanager {{ android.build_tools|quote }} {{ android.sys_image|quote }} {{ android.platform_tools|quote }} 

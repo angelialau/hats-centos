@@ -3,18 +3,11 @@
 - hosts: target
 
   tasks:
-    - name: Get names of all global npm packages that aren't npm itself
-      shell: npm ls -gp --depth=0 | awk -F/ '/node_modules/ && !/\/npm$/ {print $NF}'
-      register: glob_npm_names
-
-    - debug: 
-        var: packages
-
-    - name: Uninstall global npm packages 
-      shell: "echo {{ items }} >> ~/.test.txt" 
-      with_items: "{{ packages.stdout_lines }}"
-
-    # - name: Uninstall global npm packages 
-    #   npm:
-    #     name: "{{ items }}"
-    #   with_items: "{{ packages.stdout_lines }}"
+    - name: Remove all global npm packages that aren't npm itself
+      shell: "npm ls -gp --depth=0 | awk -F/ '/node_modules/ && !/\\/npm$/ {print $NF}' | xargs npm -g rm"
+    
+    - name: Reinstall appium globally
+      npm:
+        name: appium
+        global: yes
+        state: present

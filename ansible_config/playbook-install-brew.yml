@@ -27,9 +27,6 @@
         state: started
       become: false
 
-    - name: Check if brew is installed
-      command: brew --version
-
   handlers:
     - name: Source bashrc
       shell: source ~/.bashrc

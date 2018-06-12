@@ -16,7 +16,7 @@
         name: java
         state: present
       become: yes
-  
+
     - name: Make new /opt/android-sdk/ directory
       file:
         path: "{{ sdk.perm_dir }}"
@@ -73,4 +73,4 @@
       shell: yes | sdkmanager --licenses
 
     - name: Install Android build tools
-      shell: sdkmanager {{ android.build_tools|quote }} {{ android.sys_image|quote }} {{ android.platform_tools|quote }} 
+      shell: sdkmanager {{ android.build_tools|quote }} {{ android.sys_image|quote }} {{ android.platform_tools|quote }}

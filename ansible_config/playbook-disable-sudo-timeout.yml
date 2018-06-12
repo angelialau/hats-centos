@@ -3,5 +3,11 @@
 - hosts: target
 
   tasks:
-    
-- import_tasks: task-disable-sudo-timeout.yml
+  - name: Disable sudo timeout
+    lineinfile:
+      path: /etc/sudoers
+      state: present
+      regexp: 'Defaults timestamp_timeout=.*'
+      line: 'Defaults timestamp_timeout=-1'
+      validate: '/usr/sbin/visudo -cf %s'
+    become: yes

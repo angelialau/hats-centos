@@ -10,7 +10,7 @@
 
   tasks:
     - name: Install virtualenv
-      pip: 
+      pip:
         name: virtualenv
         state: latest
       become: yes
@@ -52,7 +52,7 @@
         dest: "{{ py.temp_dir }}/{{ py.filename }}"
 
     - name: Install the packages specified in pip-install-list.txt in hats env
-      pip: 
+      pip:
         requirements: "{{ py.temp_dir }}/{{ py.filename }}"
         state: present
         virtualenv: "{{ hats_env }}"
@@ -61,7 +61,7 @@
       file:
         path: "{{ py.temp_dir }}/{{ py.filename }}"
         state: absent
-  
+
   handlers:
     - name: Source bashrc
       shell: source ~/.bashrc

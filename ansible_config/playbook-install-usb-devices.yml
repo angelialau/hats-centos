@@ -1,0 +1,56 @@
+---
+
+- hosts: target
+  vars:
+    android_rules:
+      url: 'https://raw.githubusercontent.com/M0Rf30/android-udev-rules/master/51-android.rules'
+      udev_dir: '/etc/udev/rules.d'
+      filename: '51-android.rules'
+
+  tasks:
+    - name: Install usbutils through Yum
+      yum:
+        name: usbutils
+        state: present
+      become: yes
+
+    - name: Download 51 android rules to /etc/udev/rules.d dir
+      get_url:
+        url: "{{ android_rules.url }}"
+        dest: "{{ android_rules.udev_dir }}/{{ android_rules.filename }}"
+      become: yes
+
+    - name: Change permissions of android rules 
+      file:
+        path: "{{ android_rules.udev_dir }}/{{ android_rules.filename }}"
+        mode: "a+r"
+      become: yes
+
+    - name: Add a group called adbusers
+      group:
+        name: adbusers
+        state: present
+      become: yes
+
+    - name: Append adbusers to wheel group
+      user:
+        name: adbusers
+        group: "{{ ansible_user_id }}"
+        append: yes
+      become: yes
+
+    - name: Reload rules
+      shell: /sbin/udevadm control --reload-rules
+      become: yes
+
+    - name: Restart systemd-udevd
+      service: 
+        name: systemd-udevd
+        state: restarted
+      become: yes
+
+      
+    
+
+
+

@@ -1,0 +1,36 @@
+---
+
+- hosts: target
+  vars:
+    py:
+      rqms_url: 'https://raw.githubusercontent.com/younglim/hats-ci/master/install-list/pip-install-list.txt'
+      temp_dir: "/tmp/{{ansible_user_id}}/ansible"
+      filename: "pip-install-list.txt"
+    hats_env: "/opt/hats"
+
+  # in the hats env now
+  tasks:
+    - name: Install functools
+      easy_install: 
+        name: functools
+        state: present
+        virtualenv: "{{ hats_env }}"
+
+    - name: Download pip-install-list.txt
+      get_url:
+        url: "{{ py.rqms_url }}"
+        dest: "{{ py.temp_dir }}/{{ py.filename }}"
+
+    - name: Install the packages specified in pip-install-list.txt in hats env
+      pip: 
+        requirements: "{{ py.temp_dir }}/{{ py.filename }}"
+        state: present
+        virtualenv: "{{ hats_env }}"
+
+    - name: Remove pip-install-list.txt
+      file:
+        path: "{{ py.temp_dir }}/{{ py.filename }}"
+        state: absent
+
+
+ 

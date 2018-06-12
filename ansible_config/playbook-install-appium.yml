@@ -45,9 +45,3 @@
             killall -r "^node"
           ;;
           esac
-
-    - name: Append script to configure and run appium to bashrc
-      lineinfile:
-        path: ~/.bashrc
-        state: present
-        line: /opt/appium start

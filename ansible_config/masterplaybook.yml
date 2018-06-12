@@ -14,3 +14,4 @@
 - import_playbook: playbook-install-google-chrome.yml
 - import_playbook: playbook-install-firefox.yml
 - import_playbook: playbook-install-nvm-node-lts.yml
+- import_playbook: playbook-install-appium.yml

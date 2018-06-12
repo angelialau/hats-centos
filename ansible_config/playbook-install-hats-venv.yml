@@ -1,6 +1,8 @@
 ---
 
 - hosts: target
+  vars:
+    hats_env: "/opt/hats"
 
   tasks:
     - name: Install virtualenv
@@ -9,21 +11,21 @@
         state: latest
       become: yes
 
-    - name: Create hats diretory
+    - name: Create hats directory
       file:
-        path: "/opt/hats"
+        path: "{{ hats_env }}"
         state: directory
-        owner: root
-        group: wheel
+        owner: "{{ ansible_user_id }}"
+        group: "{{ ansible_user_id }}"
+        recurse: yes
       become: yes
 
     - name: Create hats virtualenv
-      become: yes 
       pip:
         name: "{{ item }}"
-        state: present
+        state: latest
         extra_args: --upgrade
-        virtualenv: /opt/hats
+        virtualenv: "{{ hats_env }}"
       with_items:
       - pip
       - setuptools
@@ -34,28 +36,12 @@
       lineinfile:
         path: ~/.bashrc
         state: present
-        line: 'source /opt/hats/bin/activate'
+        line: source {{ hats_env }}/bin/activate
       notify: Source bashrc
-
-    # - name: Install functools through easy_install in hats env
-    #   become: yes 
-    #   easy_install:
-    #     name: functools
-    #     state: present
-    #     virtualenv: /opt/hats
-    #   notify: Source bashrc
-
-    # - name: Install the packages specified in pip-install-list.txt in hats env
-    #   pip: 
-    #     requirements: https://raw.githubusercontent.com/younglim/hats-ci/master/install-list/pip-install-list.txt
-    #     state: present
-    #     virtualenv: /opt/hats
-
+  
   handlers:
     - name: Source bashrc
       shell: source ~/.bashrc
 
     - name: Source hats env
-      shell: source /opt/hats/bin/activate
-
- 
+      shell: source "{{ hats_env }}"/bin/activate

@@ -1,0 +1,23 @@
+---
+
+- hosts: target
+
+  tasks:
+
+    - name: Download the nvm(node version manager) install script
+      get_url:
+        url: https://raw.githubusercontent.com/creationix/nvm/v0.33.8/install.sh
+        dest: /tmp/install.sh
+
+    - name: Execute the nvm install script
+      shell: bash install.sh
+      args:
+        chdir: /tmp
+        executable: /bin/bash
+
+    - name: Register the NVM_DIR
+      shell: echo $NVM_DIR
+      register: nvm_dir
+
+    - name: Install Node LTS Carbon using the nvm command 
+      shell: . {{ nvm_dir.stdout }}/nvm.sh && nvm install lts/carbon

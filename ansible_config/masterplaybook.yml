@@ -15,4 +15,5 @@
 - import_playbook: playbook-install-firefox.yml
 - import_playbook: playbook-install-nvm-node-lts.yml
 - import_playbook: playbook-install-appium.yml
-# - import_playbook: playbook-install-usb-devices.yml
+- import_playbook: playbook-install-usb-devices.yml
+- import_playbook: playbook-uninstall-global-npm-packages.yml

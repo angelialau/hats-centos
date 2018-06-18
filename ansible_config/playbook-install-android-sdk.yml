@@ -2,9 +2,9 @@
 - hosts: target
   vars:
     sdk:
-      url: 'https://dl.google.com/android/repository/sdk-tools-linux-3859397.zip'
+      url: 'https://dl.google.com/android/repository/sdk-tools-linux-4333796.zip'
       perm_dir: "/opt/android-sdk"
-      zipfilename: "sdk-tools-linux-3859397.zip"
+      zipfilename: "sdk-tools-linux-4333796.zip"
     android:
       build_tools: 'build-tools;27.0.3'
       sys_image: 'system-images;android-27;google_apis;x86'

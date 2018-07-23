@@ -18,19 +18,24 @@ Program to create a golden image of the hats environment in CentOS using ansible
 # For updating of driver and software versions
 
 Some of the components to be installed will have to be updated over time.
-The urls and latest version numbers to these components can be found in the following links.
+The following list shows links where the urls and latest version numbers to these components can be found and which files they are found in.
 
-1. Android command line tools only
-   - https://developer.android.com/studio/#downloads
-1. Android SDK Build Tools (update the version number)
-   - https://developer.android.com/studio/releases/build-tools
-1. Hats virtual env (dependends on the pip-install-list.txt)
-   - https://raw.githubusercontent.com/younglim/hats-ci/master/install-list/pip-install-list.txt
-1. Chromedriver (update the version number)
-   - http://chromedriver.chromium.org/downloads
-1. Mozilla Firefox repository (update the version number)
-   - http://ftp.mozilla.org/pub/firefox/releases/
-1. Gecko-driver (update the version number)
-   - https://github.com/mozilla/geckodriver/releases
-1. Node Version Manager (update the version number)
-   - https://github.com/creationix/nvm/releases
+1. playbook-install-android-sdk.yml
+   - Android command line tools only 
+      - https://developer.android.com/studio/#downloads
+   - Android SDK Build Tools (update the version number)
+      - https://developer.android.com/studio/releases/build-tools
+1. playbook-install-hats-venv.yml
+   - Hats virtual env (dependends on the pip-install-list.txt)
+      - https://raw.githubusercontent.com/younglim/hats-ci/master/install-list/pip-install-list.txt
+1. playbook-install-google-chrome.yml
+   - Chromedriver (update the version number)
+      - http://chromedriver.chromium.org/downloads
+1. playbook-install-firefox.yml
+   - Mozilla Firefox repository (update the version number)
+      - http://ftp.mozilla.org/pub/firefox/releases/
+   - Gecko-driver (update the version number)
+      - https://github.com/mozilla/geckodriver/releases
+1. playbook-install-nvm-node-lts.yml
+   - Node Version Manager (update the version number)
+      - https://github.com/creationix/nvm/releases
